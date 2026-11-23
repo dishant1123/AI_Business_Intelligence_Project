@@ -15,13 +15,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend application code
 COPY . .
 
-# Copy dataset into root if needed for initial seed
-COPY ../04_Manufacturing.xlsx /app/04_Manufacturing.xlsx 2>/dev/null || :
-
 # Create storage directories
 RUN mkdir -p /app/storage/appdata /app/storage/reports /app/storage/uploads /app/storage/models
 ENV LOCALAPPDATA=/app/storage/appdata
 ENV PORT=8000
+ENV PYTHONPATH=/app
 
 EXPOSE 8000
 

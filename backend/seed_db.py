@@ -58,13 +58,23 @@ def init_db():
             print("Users already exist.")
 
         # Ingest Excel dataset
-        excel_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "04_Manufacturing.xlsx"))
-        if os.path.exists(excel_path):
+        candidate_paths = [
+            os.path.abspath("04_Manufacturing.xlsx"),
+            os.path.abspath(os.path.join(os.path.dirname(__file__), "04_Manufacturing.xlsx")),
+            os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "04_Manufacturing.xlsx"))
+        ]
+        excel_path = None
+        for p in candidate_paths:
+            if os.path.exists(p):
+                excel_path = p
+                break
+
+        if excel_path and os.path.exists(excel_path):
             print(f"Ingesting dataset from {excel_path}...")
             res = DataIngestionService.import_excel_workbook(excel_path, db)
             print("Dataset imported successfully:", res["counts"])
         else:
-            print(f"Warning: {excel_path} not found.")
+            print("Warning: 04_Manufacturing.xlsx not found in candidate paths:", candidate_paths)
 
     finally:
         db.close()
